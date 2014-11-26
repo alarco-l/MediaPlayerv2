@@ -1,0 +1,33 @@
+﻿<Window x:Class="MediaPlayerv2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MediaPlayerV2" Height="600" Width="850" MinHeight="600" MinWidth="850">
+    <Grid AllowDrop="True" Drop="Grid_Drop" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="70"></RowDefinition>
+        </Grid.RowDefinitions>
+        <MediaElement Name="MediaElement" Grid.Row="0" LoadedBehavior="Manual" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded" UnloadedBehavior="Stop"/>
+        <Button Grid.Row="1" Height="35" Width="35" Background="Transparent" Margin="10,0,0,6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="fullScreen">
+            <Image Source="C:\Users\dasson_w\Desktop\Ressource PointNet\fullscreen.png" Grid.Row="1"/>
+        </Button>
+        <Button Grid.Row="1" Height="35" Width="35" Background="Transparent" Margin="437,19,320,6" Click="muteVideo">
+            <Image Name="Volume" Source="C:\Users\dasson_w\Desktop\Ressource PointNet\button_mute.png" Grid.Row="1"/>
+        </Button>
+        <Button Grid.Row="1" Height="35" Width="35" Background="Transparent" Margin="326,19,431,6" Click="stopVideo" Command="{Binding stopCommand}">
+            <Image Source="C:\Users\dasson_w\Desktop\Ressource PointNet\button_stop.png"/>
+        </Button>
+        <Button Name="button" Grid.Row="1" Height="35" Width="35" Background="Transparent" Command="{Binding ClickCommand}" Margin="380,19,376,6" >
+            <Image Name="Play" Source="{Binding playImage}"/>
+        </Button>
+        <Slider Name="TimeLine" Grid.Row="1" Height="25" Margin="58,0,65,27" Thumb.DragStarted="TimeLine_DragStarted" Thumb.DragCompleted="TimeLine_DragCompleted" />
+        <Slider Name="VolumeLine" Grid.Row="1" Height="25" Margin="0,0,52,12" Minimum="0" Maximum="1" HorizontalAlignment="Right" Width="172" VerticalAlignment="Bottom" Value="{Binding ElementName=MediaElement, Path=Volume}"/>
+        <TextBlock Name="Text" Grid.Row="1" Height="25" Width="250" Margin="58,29,0,6" HorizontalAlignment="Left"></TextBlock>
+        <Menu Name="MenuBar" Height="20" VerticalAlignment="Top">
+            <MenuItem Header="Media">
+                <MenuItem Name="OpenFile" Header="Open File" Click="OpenFile_Click"></MenuItem>
+                <MenuItem Name="Playlist" Header="Playlist"></MenuItem>
+            </MenuItem>
+        </Menu>
+    </Grid>
+</Window>
