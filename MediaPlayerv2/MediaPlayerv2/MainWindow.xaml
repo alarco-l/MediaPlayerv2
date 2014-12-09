@@ -7,7 +7,7 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="70"></RowDefinition>
         </Grid.RowDefinitions>
-        <MediaElement Name="MediaElement" Grid.Row="0" LoadedBehavior="Manual" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded" UnloadedBehavior="Stop"/>
+        <MediaElement Name="MediaElement" Grid.Row="0" LoadedBehavior="Manual" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded" UnloadedBehavior="Stop" Margin="0,0,260,0"/>
         <Menu Name="MenuBar" Height="20" VerticalAlignment="Top" Background="#FF3E3E3E" Foreground="White">
             <MenuItem Header="Media">
                 <MenuItem Name="OpenFile" Header="Open File" Click="OpenFile_Click"></MenuItem>

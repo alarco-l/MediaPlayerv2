@@ -153,7 +153,8 @@ namespace MediaPlayerv2
         private static string fileName;
         private bool isOk = false;
         private bool isFullScreen = false;
-
+		TimeSpan _position;
+ 
         public MainWindow()
         {
             InitializeComponent();
@@ -198,7 +199,10 @@ namespace MediaPlayerv2
 
         private void Element_MediaOpened(object sender, EventArgs e)
         {
-            TimeLine.Maximum = MediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+            //TimeLine.Maximum = MediaElement.NaturalDuration.TimeSpan.TotalSeconds;
+			_position = MediaElement.NaturalDuration.TimeSpan;
+        	TimeLine.Minimum = 0;
+        	TimeLine.Maximum = _position.TotalSeconds;
         }
 
         private void Element_MediaEnded(object sender, EventArgs e)
@@ -380,10 +384,10 @@ namespace MediaPlayerv2
             if (MediaElement.Source != null)
             {
                 TimeLine.Value = e.GetPosition(TimeLine).X / TimeLine.ActualWidth * TimeLine.Maximum;
-                double time = MediaElement.NaturalDuration.TimeSpan.Ticks * (TimeLine.Value / TimeLine.Maximum);
-                Console.Write(time);
+				int time = Convert.ToInt32(TimeLine.Value);
+                MediaElement.Position = TimeSpan.FromSeconds(time);
+				Console.Write(time);
                 Console.Write("\n");
-                MediaElement.Position = new TimeSpan(0,0,(int)time,0);
             }
         }
 
