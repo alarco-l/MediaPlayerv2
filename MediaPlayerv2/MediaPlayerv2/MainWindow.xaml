@@ -1,84 +1,89 @@
 ﻿<Window x:Class="MediaPlayerv2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MediaPlayerV2" Height="600" Width="1100" MinHeight="600" MinWidth="850">
+        Title="MediaPlayerV2" Height="600" Width="1100" MinHeight="600" MinWidth="1100">
     <Grid AllowDrop="True" Drop="Grid_Drop" Background="#FF2E2E2E">
         <Grid.RowDefinitions>
+            <RowDefinition Height="35"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="70"></RowDefinition>
+            <RowDefinition Height="80"></RowDefinition>
         </Grid.RowDefinitions>
-        <MediaElement Name="MediaElement" Grid.Row="0" LoadedBehavior="Manual" MediaOpened="Element_MediaOpened" MediaEnded="Element_MediaEnded" UnloadedBehavior="Stop" Margin="0,0,260,0"/>
-        <Menu Name="MenuBar" Height="20" VerticalAlignment="Top" Background="#FF3E3E3E" Foreground="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <MediaElement Name="MediaElement" Grid.Row="1" LoadedBehavior="Manual" UnloadedBehavior="Stop"/>
+        <Menu Name="MenuBar" Background="#FF3E3E3E" Foreground="White" Grid.ColumnSpan="2">
             <MenuItem Header="Media">
-                <MenuItem Name="OpenFile" Header="Open File" Click="OpenFile_Click"></MenuItem>
+                <MenuItem Name="OpenFile" Header="Open File" Command="{Binding openFile}"></MenuItem>
                 <MenuItem Name="Playlist" Header="Playlist"></MenuItem>
             </MenuItem>
         </Menu>
-        <Button Name="Play" Content="Button" HorizontalAlignment="Left" Margin="10,32,0,0" Grid.Row="1" VerticalAlignment="Top" Width="30" Height="30" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="Play_Click">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="play.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="play.png"/>
-        	</Button.Background>
+        <Button Name="Play" Content="Button" Margin="10,0,0,18" Grid.Row="2" VerticalAlignment="Bottom" Height="30" BorderBrush="{x:Null}" Foreground="{x:Null}" Command="{Binding playCommand}" HorizontalAlignment="Left" Width="30">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="{Binding playImage}"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="{Binding playImage}"/>
+            </Button.Background>
         </Button>
-        <Slider Name="VolumeLine" HorizontalAlignment="Left" Margin="723,36,0,0" Grid.Row="1" VerticalAlignment="Top" Width="109" Foreground="#00000000" Maximum="1" Value="{Binding ElementName=MediaElement, Path=Volume}"/>
-        <Button Name="sound" Content="Button" HorizontalAlignment="Left" Margin="676,27,0,0" Grid.Row="1" VerticalAlignment="Top" Width="35" Height="35" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="sound_Click">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="sound.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="sound.png"/>
-        	</Button.Background>
+        <Slider Name="VolumeLine" Margin="0,36,110,0" Grid.Row="2" VerticalAlignment="Top" Foreground="#00000000" Minimum="0" Maximum="1" Value="{Binding ElementName=MediaElement, Path=Volume}" HorizontalAlignment="Right" Width="109"/>
+        <Button Name="sound" Content="Button" Margin="0,27,231,0" Grid.Row="2"  VerticalAlignment="Top" Height="35" BorderBrush="{x:Null}" Foreground="{x:Null}" Command="{Binding soundClick}" HorizontalAlignment="Right">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="{Binding soundImage}"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="{Binding soundImage}"/>
+            </Button.Background>
         </Button>
-        <Button Name="stop" Content="" HorizontalAlignment="Left" Margin="203.366,29.665,0,0" Grid.Row="1" VerticalAlignment="Top" Width="27" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="stop.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="stop.png"/>
-        	</Button.Background>
+        <Button Name="stop" Content="" Margin="203,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="27" Command="{Binding stopCommand}">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="stop.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="stop.png"/>
+            </Button.Background>
         </Button>
-        <Button Name="next" Content="" HorizontalAlignment="Left" Margin="239.366,30,0,0" Grid.Row="1" VerticalAlignment="Top" Width="27" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="next.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="next.png"/>
-        	</Button.Background>
+        <Button Name="next" Content="" Margin="239,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="27">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="next.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="next.png"/>
+            </Button.Background>
         </Button>
-        <Button Name="prev" Content="" HorizontalAlignment="Left" Margin="166.366,30,0,0" Grid.Row="1" VerticalAlignment="Top" Width="27" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="prev.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="prev.png"/>
-        	</Button.Background>
+        <Button Name="prev" Content="" Margin="166,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="27">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="prev.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="prev.png"/>
+            </Button.Background>
         </Button>
-        <Button Name="repeat" Content="" HorizontalAlignment="Left" Margin="338.366,30,0,0" Grid.Row="1" VerticalAlignment="Top" Width="27" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="repeat.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="repeat.png"/>
-        	</Button.Background>
+        <Button Name="repeat" Content="" Margin="338,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="27">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="repeat.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="repeat.png"/>
+            </Button.Background>
         </Button>
-        <Button x:Name="shuffle" Content="" HorizontalAlignment="Left" Margin="377.366,30,0,0" Grid.Row="1" VerticalAlignment="Top" Width="27" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="shuffle.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="shuffle.png"/>
-        	</Button.Background>
+        <Button x:Name="shuffle" Content="" Margin="377,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="27">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="shuffle.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="shuffle.png"/>
+            </Button.Background>
         </Button>
-        <Button x:Name="fullscreen" Content="" HorizontalAlignment="Left" Margin="476.366,30,0,0" Grid.Row="1" VerticalAlignment="Top" Width="30" Height="30" BorderBrush="{x:Null}" Foreground="{x:Null}">
-        	<Button.OpacityMask>
-        		<ImageBrush ImageSource="fullscreen.png"/>
-        	</Button.OpacityMask>
-        	<Button.Background>
-        		<ImageBrush ImageSource="fullscreen.png"/>
-        	</Button.Background>
+        <Button x:Name="fullscreen" Content="" Margin="476,30,0,0" Grid.Row="2" VerticalAlignment="Top" Height="30" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Left" Width="30">
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="fullscreen.png"/>
+            </Button.OpacityMask>
+            <Button.Background>
+                <ImageBrush ImageSource="fullscreen.png"/>
+            </Button.Background>
         </Button>
-        <ProgressBar Name="TimeLine" HorizontalAlignment="Left" Height="10" Margin="8,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="822" Foreground="#FF00439D" Background="White" BorderBrush="#FF1BA6ED" MouseLeftButtonUp="TimeLine_MouseLeftButtonUp"/>
+        <ProgressBar Name="TimeLine" Height="10" Margin="8,10,112,0" Grid.Row="2" VerticalAlignment="Top" Foreground="#FF00439D" Background="White" BorderBrush="#FF1BA6ED" MouseLeftButtonUp="TimeLine_MouseLeftButtonUp" Minimum="0" Maximum="{Binding maximumDuration}"  Value="{Binding valueTime}"/>
     </Grid>
 </Window>
