@@ -27,13 +27,12 @@ namespace MediaPlayerv2
 
     public partial class MainWindow : Window
     {
-        private bool isPlaying;
-        private bool isPaused;
+        private ViewController _controller;
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new ViewModelBase(ref MediaElement);
+            _controller = new ViewController(MediaElement, (ViewModelBase)DataContext); //DataContext correspond to viewModel
         }
 
         private void Grid_Drop(object sender, System.Windows.DragEventArgs e)
@@ -42,42 +41,18 @@ namespace MediaPlayerv2
 
             file = (String[])e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop, true);
             MediaElement.Source = new Uri(file[0]);
-      //      Text.Text = file[0];
-        //    Play.Source = getNewImage("C:/Users/ludovic/Desktop/MediaPlayerv2/Ressource PointNet/button_pause.png");
-            isPlaying = true;
-            isPaused = false;
+            //Text.Text = file[0];
+            //Play.Source = getNewImage("C:/Users/ludovic/Desktop/MediaPlayerv2/Ressource PointNet/button_pause.png");
             MediaElement.Play();
         }
 
-     /*   private void fullScreen(object sender, RoutedEventArgs e)
+        public ViewController Controller
         {
-            if (!isFullScreen)
+            get { return _controller; }
+            set
             {
-                this.WindowStyle = WindowStyle.None;
-                this.WindowState = WindowState.Maximized;
-                isFullScreen = true;
+                _controller = value;
             }
-            else
-            {
-                this.WindowStyle = WindowStyle.SingleBorderWindow;
-                this.WindowState = WindowState.Normal;
-                isFullScreen = false;
-            }
-        }*/
-
-        private void TimeLine_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
-        {
-            MediaElement.Pause();
-            //timer.Stop();
-        }
-
-        private void TimeLine_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            int SliderValue = (int)TimeLine.Value;
-            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
-            MediaElement.Position = ts;
-            MediaElement.Play();
-            //timer.Start();
         }
 
         private void TimeLine_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

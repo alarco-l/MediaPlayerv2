@@ -15,25 +15,23 @@ namespace MediaPlayerv2
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        DispatcherTimer         timer;
-        public delegate void    timerTick();
-        timerTick               tick;
+        DispatcherTimer timer;
+        public delegate void timerTick();
+        timerTick tick;
         FolderBrowserDialog folder = new System.Windows.Forms.FolderBrowserDialog();
         OpenFileDialog dialogBox = new System.Windows.Forms.OpenFileDialog();
         private bool            _canExecute;
-        private MediaElement    _media;
         private ImageSource     _playImage;
         private ImageSource     _soundImage;
         private CommandHandler  _stopCommand;
         private CommandHandler  _playCommand;
         private CommandHandler  _openFile;
         private CommandHandler  _soundClick;
-        private Double          _valueTime;
-        private Double          _maximumDuration;
         private string          _fileName;
         private bool            _isPlaying = false;
         private bool            _isOk = false;
         private bool            _isPaused = false;
+        private bool            _isMuted = false;
 
         BitmapImage getNewImage(String path)
         {
@@ -45,10 +43,9 @@ namespace MediaPlayerv2
             return transition;
         }
 
-        public ViewModelBase(ref MediaElement media)
+        public ViewModelBase()
         {
             _canExecute = true;
-            _media = media;
             playImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
             soundImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/sound.png");
             timer = new DispatcherTimer();
@@ -57,30 +54,20 @@ namespace MediaPlayerv2
             tick = new timerTick(changeStatus);
         }
 
-        void    timer_Tick(object sender, EventArgs e)
+        void changeStatus()
+        {
+            if (_isPlaying)
+                RaisePropertyChanged("update");
+            RaisePropertyChanged("totalTime");
+        }
+
+        void timer_Tick(object sender, EventArgs e)
         {
             timer.Dispatcher.Invoke(tick);
         }
 
-        void changeStatus()
-        {
-            if (_isPlaying)
-                valueTime = _media.Position.TotalSeconds;
-            if (_media.NaturalDuration.HasTimeSpan)
-                maximumDuration = _media.NaturalDuration.TimeSpan.TotalSeconds;
-        }
 
         #region propertyChanged
-
-        public Double maximumDuration
-        {
-            get { return _maximumDuration; }
-            set
-            {
-                _maximumDuration = value;
-                RaisePropertyChanged("maximumDuration");
-            }
-        }
 
         public ImageSource playImage
         {
@@ -102,15 +89,16 @@ namespace MediaPlayerv2
             }
         }
 
-        public Double valueTime
+        public String fileName
         {
-            get { return _valueTime; }
+            get { return _fileName; }
             set
             {
-                _valueTime = value;
-                RaisePropertyChanged("valueTime");
+                _fileName = value;
+                RaisePropertyChanged("fileName");
             }
         }
+
         #endregion
 
         #region command
@@ -150,7 +138,7 @@ namespace MediaPlayerv2
 
         public void stopAction()
         {
-            _media.Stop();
+            RaisePropertyChanged("stop");
             _isPlaying = false;
             timer.Stop();
         }
@@ -160,18 +148,20 @@ namespace MediaPlayerv2
             BitmapImage bsound = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/mute.png");
             BitmapImage bmute = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/sound.png");
             ImageBrush brush = new ImageBrush();
-            if (_media.IsMuted == true)
-            {
-                brush.ImageSource = bmute;
-                soundImage = brush.ImageSource;
-                _media.IsMuted = false;
-            }
-            else
+
+            if (!_isMuted)
             {
                 brush.ImageSource = bsound;
                 soundImage = brush.ImageSource;
-                _media.IsMuted = true;
-                //VolumeLine.Value = 0;
+                _isMuted = true;
+                RaisePropertyChanged("mute");
+            }
+            else
+            {
+                brush.ImageSource = bmute;
+                soundImage = brush.ImageSource;
+                _isMuted = false;
+                RaisePropertyChanged("unMute");
             }
         }
 
@@ -199,10 +189,10 @@ namespace MediaPlayerv2
                 playImage = brush.ImageSource;
                 if (_fileName != null && !_isOk)
                 {
-                    _media.Source = new Uri(_fileName, UriKind.RelativeOrAbsolute);
+                    RaisePropertyChanged("playWithFile");
                     _isOk = true;
                 }
-                _media.Play();
+                RaisePropertyChanged("play");
                 timer.Start();
                 _isPaused = true;
                 _isPlaying = true;
@@ -211,7 +201,7 @@ namespace MediaPlayerv2
             {
                 brush.ImageSource = bplay;
                 playImage = brush.ImageSource;
-                _media.Pause();
+                RaisePropertyChanged("pause");
                 timer.Stop();
                 _isPaused = false;
                 _isPlaying = false;
