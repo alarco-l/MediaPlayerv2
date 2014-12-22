@@ -35,17 +35,6 @@ namespace MediaPlayerv2
             _controller = new ViewController(MediaElement, (ViewModelBase)DataContext); //DataContext correspond to viewModel
         }
 
-        private void Grid_Drop(object sender, System.Windows.DragEventArgs e)
-        {
-            String[] file;
-
-            file = (String[])e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop, true);
-            MediaElement.Source = new Uri(file[0]);
-            //Text.Text = file[0];
-            //Play.Source = getNewImage("C:/Users/ludovic/Desktop/MediaPlayerv2/Ressource PointNet/button_pause.png");
-            MediaElement.Play();
-        }
-
         public ViewController Controller
         {
             get { return _controller; }
@@ -62,8 +51,6 @@ namespace MediaPlayerv2
                 TimeLine.Value = e.GetPosition(TimeLine).X / TimeLine.ActualWidth * TimeLine.Maximum;
 				int time = Convert.ToInt32(TimeLine.Value);
                 MediaElement.Position = TimeSpan.FromSeconds(time);
-				Console.Write(time);
-                Console.Write("\n");
             }
         }
 

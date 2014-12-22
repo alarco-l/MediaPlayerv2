@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +23,15 @@ namespace MediaPlayerv2
         FolderBrowserDialog folder = new System.Windows.Forms.FolderBrowserDialog();
         OpenFileDialog dialogBox = new System.Windows.Forms.OpenFileDialog();
         private bool            _canExecute;
+        private string          _realName;
         private ImageSource     _playImage;
         private ImageSource     _soundImage;
         private CommandHandler  _stopCommand;
         private CommandHandler  _playCommand;
         private CommandHandler  _openFile;
         private CommandHandler  _soundClick;
+        private CommandHandler  _prevButton;
+        private CommandHandler  _nextButton;
         private string          _fileName;
         private bool            _isPlaying = false;
         private bool            _isOk = false;
@@ -66,7 +71,6 @@ namespace MediaPlayerv2
             timer.Dispatcher.Invoke(tick);
         }
 
-
         #region propertyChanged
 
         public ImageSource playImage
@@ -96,6 +100,16 @@ namespace MediaPlayerv2
             {
                 _fileName = value;
                 RaisePropertyChanged("fileName");
+            }
+        }
+
+        public string realName
+        {
+            get { return _realName; }
+            set
+            {
+                _realName = value;
+               RaisePropertyChanged("realName");
             }
         }
 
@@ -134,12 +148,44 @@ namespace MediaPlayerv2
             }
         }
 
+        public CommandHandler PrevButton
+        {
+            get
+            {
+                return _prevButton ?? (_prevButton = new CommandHandler(() => PrevButtonAction(), _canExecute));
+            }
+        }
+
+        public CommandHandler NextButton
+        {
+            get
+            {
+                return _nextButton ?? (_nextButton = new CommandHandler(() => NextButtonAction(), _canExecute));
+            }
+        }
+
         #endregion
+
+        public void PrevButtonAction()
+        {
+            RaisePropertyChanged("prevPush");
+        }
+
+        public void NextButtonAction()
+        {
+            RaisePropertyChanged("nextPush");
+        }
 
         public void stopAction()
         {
+            BitmapImage bplay = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
+            ImageBrush brush = new ImageBrush();
+
+            brush.ImageSource = bplay;
+            playImage = brush.ImageSource;
             RaisePropertyChanged("stop");
             _isPlaying = false;
+            _isPaused = false;
             timer.Stop();
         }
 
@@ -169,11 +215,15 @@ namespace MediaPlayerv2
         {
             dialogBox.InitialDirectory = folder.SelectedPath;
             dialogBox.FileName = null;
+            dialogBox.DefaultExt = ".avi";
+            dialogBox.Filter = "Videos (*.avi) |*.avi|Images (*.jpg, *.png)|*.jpg;*.png|Videos (*.mp4)|*.mp4";
 
             DialogResult result = dialogBox.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
                 _fileName = dialogBox.FileName;
+            if (_fileName != null)
+                realName = Path.GetFileNameWithoutExtension(_fileName);
             _isOk = false;
         }
 
