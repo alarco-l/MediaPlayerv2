@@ -62,8 +62,8 @@ namespace MediaPlayerv2
         public ViewModelBase()
         {
             _canExecute = true;
-            playImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
-            soundImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/sound.png");
+            playImage = getNewImage(@"Ressource PointNet\play.png");
+            soundImage = getNewImage(@"Ressource PointNet\sound.png");
             _playList = new PlayList();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -218,7 +218,7 @@ namespace MediaPlayerv2
 
         public void stopAction()
         {
-            BitmapImage bplay = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
+            BitmapImage bplay = getNewImage(@"Ressource PointNet\play.png");
             ImageBrush brush = new ImageBrush();
 
             brush.ImageSource = bplay;
@@ -231,8 +231,8 @@ namespace MediaPlayerv2
 
         public void soundClickAction()
         {
-            BitmapImage bsound = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/mute.png");
-            BitmapImage bmute = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/sound.png");
+            BitmapImage bsound = getNewImage(@"Ressource PointNet\mute.png");
+            BitmapImage bmute = getNewImage(@"Ressource PointNet\sound.png");
             ImageBrush brush = new ImageBrush();
 
             if (!_isMuted)
@@ -273,8 +273,8 @@ namespace MediaPlayerv2
 
         public void playAction()
         {
-            BitmapImage bplay = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
-            BitmapImage bpause = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/pause.png");
+            BitmapImage bplay = getNewImage(@"Ressource PointNet\play.png");
+            BitmapImage bpause = getNewImage(@"Ressource PointNet\pause.png");
             ImageBrush brush = new ImageBrush();
 
             if (_fileName != null)
