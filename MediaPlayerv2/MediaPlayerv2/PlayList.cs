@@ -1,41 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+using System.Xml.Linq;
 
 namespace MediaPlayerv2
 {
-    public class PlayList : ListBox
+    public class PlayList
     {
-        private static List<String> _list = new List<String>();
+        private ObservableCollection<string> _fileList;
+        private int _index;
 
-        protected override void OnDrop(System.Windows.DragEventArgs e)
+        public  PlayList()
         {
-            base.OnDrop(e);
-            String[] file;
-            String add;
-            String extension;
-
-            file = (String[])e.Data.GetData(System.Windows.Forms.DataFormats.FileDrop, true);
-            add = file[0];
-            _list.Add(add);
-            extension = Path.GetExtension(add);
-            if (extension == ".jpg" || extension == ".avi" || extension == ".mp4" || extension == "png")
-            {
-                add = Path.GetFileNameWithoutExtension(add);
-                Items.Add(add);
-            }
-            else
-                MessageBox.Show("Format de fichier non supporter");
+            _index = 0;
+            _fileList = new ObservableCollection<string>();
         }
 
-        public List<String>    GetListItem()
+        public void     add(string File)
         {
-            return _list;
+            _fileList.Add(File);
+        }
+
+       public string      next()
+        {
+            if (_fileList.Count > 0)
+            {
+                if (_index < _fileList.Count - 1)
+                    ++_index;
+            }
+            return (_fileList[_index]);
+        }
+
+        public string     prev()
+       {
+            if (_fileList.Count > 0)
+            {
+                if (_index > 0)
+                    --_index;
+            }
+            return (_fileList[_index]);
+       }
+
+        public void     save()
+        {
+            XDocument xdoc = new XDocument();
+            xdoc.Add(new XElement("playlist"));
+            for (int i = 0; i < _fileList.Count; ++i)
+                xdoc.Root.Add(new XElement("Path", _fileList[i]));
+            xdoc.Save("C:/Users/dasson_w/playlist.txt");
         }
     }
 }

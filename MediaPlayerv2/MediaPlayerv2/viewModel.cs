@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Xml.Linq;
 
 namespace MediaPlayerv2
 {
@@ -22,6 +23,7 @@ namespace MediaPlayerv2
         timerTick tick;
         FolderBrowserDialog folder = new System.Windows.Forms.FolderBrowserDialog();
         OpenFileDialog dialogBox = new System.Windows.Forms.OpenFileDialog();
+        private PlayList        _playList;
         private bool            _canExecute;
         private string          _realName;
         private ImageSource     _playImage;
@@ -32,11 +34,20 @@ namespace MediaPlayerv2
         private CommandHandler  _soundClick;
         private CommandHandler  _prevButton;
         private CommandHandler  _nextButton;
+        private CommandHandler  _saveButton;
+        private CommandHandler  _dropCommand;
         private string          _fileName;
         private bool            _isPlaying = false;
         private bool            _isOk = false;
         private bool            _isPaused = false;
         private bool            _isMuted = false;
+
+        private readonly ObservableCollection<string> _fileNamePlaylist = new ObservableCollection<string>();
+
+        public ObservableCollection<string> FileNamePlaylist
+        {
+            get { return _fileNamePlaylist; }
+        }
 
         BitmapImage getNewImage(String path)
         {
@@ -53,6 +64,7 @@ namespace MediaPlayerv2
             _canExecute = true;
             playImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/play.png");
             soundImage = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/sound.png");
+            _playList = new PlayList();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(timer_Tick);
@@ -164,16 +176,44 @@ namespace MediaPlayerv2
             }
         }
 
+        public CommandHandler SaveButton
+        {
+            get
+            {
+                return _saveButton ?? (_saveButton = new CommandHandler(() => SaveButtonAction(), _canExecute));
+            }
+        }
+
+        public  CommandHandler  DropCommand
+        {
+            get
+            {
+                return _dropCommand ?? (_dropCommand = new CommandHandler(() => DropAction(), _canExecute));
+            }
+        }
+
         #endregion
+        
+        public void DropAction()
+        {
+            MessageBox.Show("tata");
+        }
 
         public void PrevButtonAction()
         {
-            RaisePropertyChanged("prevPush");
+            _fileName = _playList.prev();
+            RaisePropertyChanged("playWithFile");
         }
 
         public void NextButtonAction()
         {
-            RaisePropertyChanged("nextPush");
+           _fileName = _playList.next();
+           RaisePropertyChanged("playWithFile");
+        }
+
+        public void SaveButtonAction()
+        {
+            _playList.save();
         }
 
         public void stopAction()
@@ -216,14 +256,18 @@ namespace MediaPlayerv2
             dialogBox.InitialDirectory = folder.SelectedPath;
             dialogBox.FileName = null;
             dialogBox.DefaultExt = ".avi";
-            dialogBox.Filter = "Videos (*.avi) |*.avi|Images (*.jpg, *.png)|*.jpg;*.png|Videos (*.mp4)|*.mp4";
+            dialogBox.Filter = "Videos (*.avi) |*.avi|Images (*.jpg, *.png)|*.jpg;*.png|Videos (*.mp4)|*.mp4|Musics (*.mp3) |*.mp3";
 
             DialogResult result = dialogBox.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
                 _fileName = dialogBox.FileName;
             if (_fileName != null)
+            {
                 realName = Path.GetFileNameWithoutExtension(_fileName);
+                _fileNamePlaylist.Add(realName);
+                _playList.add(_fileName);
+            }
             _isOk = false;
         }
 
@@ -233,28 +277,31 @@ namespace MediaPlayerv2
             BitmapImage bpause = getNewImage("C:/Users/dasson_w/Desktop/MediaPlayerv2/Ressource PointNet/pause.png");
             ImageBrush brush = new ImageBrush();
 
-            if (!_isPaused)
+            if (_fileName != null)
             {
-                brush.ImageSource = bpause;
-                playImage = brush.ImageSource;
-                if (_fileName != null && !_isOk)
+                if (!_isPaused)
                 {
-                    RaisePropertyChanged("playWithFile");
-                    _isOk = true;
+                    brush.ImageSource = bpause;
+                    playImage = brush.ImageSource;
+                    if (_fileName != null && !_isOk)
+                    {
+                        RaisePropertyChanged("playWithFile");
+                        _isOk = true;
+                    }
+                    RaisePropertyChanged("play");
+                    timer.Start();
+                    _isPaused = true;
+                    _isPlaying = true;
                 }
-                RaisePropertyChanged("play");
-                timer.Start();
-                _isPaused = true;
-                _isPlaying = true;
-            }
-            else
-            {
-                brush.ImageSource = bplay;
-                playImage = brush.ImageSource;
-                RaisePropertyChanged("pause");
-                timer.Stop();
-                _isPaused = false;
-                _isPlaying = false;
+                else
+                {
+                    brush.ImageSource = bplay;
+                    playImage = brush.ImageSource;
+                    RaisePropertyChanged("pause");
+                    timer.Stop();
+                    _isPaused = false;
+                    _isPlaying = false;
+                }
             }
         }
 
