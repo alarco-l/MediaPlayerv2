@@ -65,6 +65,7 @@ namespace MediaPlayerv2
             playImage = getNewImage(@"Ressource PointNet\play.png");
             soundImage = getNewImage(@"Ressource PointNet\sound.png");
             _playList = new PlayList();
+            _fileNamePlaylist = _playList.load();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += new EventHandler(timer_Tick);
@@ -202,13 +203,21 @@ namespace MediaPlayerv2
         public void PrevButtonAction()
         {
             _fileName = _playList.prev();
+            realName =  Path.GetFileNameWithoutExtension(_fileName);
             RaisePropertyChanged("playWithFile");
+            timer.Start();
+            _isPlaying = true;
+            _isPaused = true;
         }
 
         public void NextButtonAction()
         {
            _fileName = _playList.next();
+           realName = Path.GetFileNameWithoutExtension(_fileName);
            RaisePropertyChanged("playWithFile");
+           timer.Start();
+           _isPlaying = true;
+           _isPaused = true;
         }
 
         public void SaveButtonAction()
@@ -256,7 +265,7 @@ namespace MediaPlayerv2
             dialogBox.InitialDirectory = folder.SelectedPath;
             dialogBox.FileName = null;
             dialogBox.DefaultExt = ".avi";
-            dialogBox.Filter = "Videos (*.avi) |*.avi|Images (*.jpg, *.png)|*.jpg;*.png|Videos (*.mp4)|*.mp4|Musics (*.mp3) |*.mp3";
+            dialogBox.Filter = "Videos (*.avi, *.mp4) |*.avi;*.mp4|Images (*.jpg, *.png)|*.jpg;*.png|Musics (*.mp3) |*.mp3";
 
             DialogResult result = dialogBox.ShowDialog();
 
@@ -267,6 +276,7 @@ namespace MediaPlayerv2
                 realName = Path.GetFileNameWithoutExtension(_fileName);
                 _fileNamePlaylist.Add(realName);
                 _playList.add(_fileName);
+                RaisePropertyChanged("playWithFile");
             }
             _isOk = false;
         }
@@ -277,6 +287,8 @@ namespace MediaPlayerv2
             BitmapImage bpause = getNewImage(@"Ressource PointNet\pause.png");
             ImageBrush brush = new ImageBrush();
 
+            if (_playList.first() != null && _isOk)
+                _fileName = _playList.first();
             if (_fileName != null)
             {
                 if (!_isPaused)

@@ -99,7 +99,7 @@
             </Button.Background>
         </Button>
         <ProgressBar Name="TimeLine" Height="10" Margin="8,10,112,0" Grid.Row="2" VerticalAlignment="Top" Foreground="#FF00439D" Background="White" BorderBrush="#FF1BA6ED" MouseLeftButtonUp="TimeLine_MouseLeftButtonUp" Minimum="0" DataContext="{Binding Controller, RelativeSource={RelativeSource AncestorType=Window,Mode=FindAncestor}}" Maximum="{Binding maximumDuration}"  Value="{Binding valueTime}"/>
-        <ListBox Grid.Column="2" Grid.Row="1" ItemsSource="{Binding FileNamePlaylist}">
+        <ListBox Background="#FF2E2E2E" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding FileNamePlaylist}" Foreground="Beige">
             <i:Interaction.Behaviors>
                 <vm:DropBehaviour DropCommand="{Binding DropCommand}"/>
             </i:Interaction.Behaviors>
