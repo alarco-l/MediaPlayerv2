@@ -205,9 +205,13 @@ namespace MediaPlayerv2
             _fileName = _playList.prev();
             realName =  Path.GetFileNameWithoutExtension(_fileName);
             RaisePropertyChanged("playWithFile");
-            timer.Start();
-            _isPlaying = true;
-            _isPaused = true;
+            if (!_isPlaying)
+            {
+                timer.Start();
+                playImage = getNewImage(@"Ressource PointNet\pause.png");
+                _isPlaying = true;
+                _isPaused = true;
+            }
         }
 
         public void NextButtonAction()
@@ -215,9 +219,13 @@ namespace MediaPlayerv2
            _fileName = _playList.next();
            realName = Path.GetFileNameWithoutExtension(_fileName);
            RaisePropertyChanged("playWithFile");
-           timer.Start();
-           _isPlaying = true;
-           _isPaused = true;
+            if (!_isPlaying)
+            {
+                timer.Start();
+                playImage = getNewImage(@"Ressource PointNet\pause.png");
+                _isPlaying = true;
+                _isPaused = true;
+            }
         }
 
         public void SaveButtonAction()
@@ -277,6 +285,10 @@ namespace MediaPlayerv2
                 _fileNamePlaylist.Add(realName);
                 _playList.add(_fileName);
                 RaisePropertyChanged("playWithFile");
+                playImage = getNewImage(@"Ressource PointNet\pause.png");
+                timer.Start();
+                _isPlaying = true;
+                _isPaused = true;
             }
             _isOk = false;
         }
@@ -287,7 +299,7 @@ namespace MediaPlayerv2
             BitmapImage bpause = getNewImage(@"Ressource PointNet\pause.png");
             ImageBrush brush = new ImageBrush();
 
-            if (_playList.first() != null && _isOk)
+            if (_playList.first() != null && _fileName == null)
                 _fileName = _playList.first();
             if (_fileName != null)
             {

@@ -58,7 +58,10 @@ namespace MediaPlayerv2
         public string   first()
         {
             if (_fileList.Count > 0)
-                return (_fileList[0]);
+            {
+                _index = 0;
+                return (_fileList[_index]);
+            }
             return null;
         }
 
@@ -87,6 +90,7 @@ namespace MediaPlayerv2
                      _fileList.Add(VariablePath.path);
                      _saveList.Add(Path.GetFileNameWithoutExtension(VariablePath.path));
                  }
+                 _index = _fileList.Count - 1;
             }
 
             catch (FileNotFoundException)
